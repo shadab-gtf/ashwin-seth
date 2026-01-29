@@ -33,7 +33,7 @@ export default function FAQ() {
                                 {openIndex === idx ? <Minus className="w-5 h-5 text-[#1B4485]" /> : <Plus className="w-5 h-5 text-[#1B4485]" />}
                             </button>
                             <div
-                                className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${openIndex === idx ? 'max-h-40 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
+                                className={`px-6 pt-3 overflow-hidden transition-all duration-300 ease-in-out ${openIndex === idx ? 'max-h-40 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
                             >
                                 <p className="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
                             </div>
