@@ -46,3 +46,22 @@ html.lenis body {
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
+
+    .floor-swiper .swiper-slide .image{
+          background-color: #ffffff5f;
+          transform: scale(0.5);
+          opacity: 0.5;
+          transition: all 0.3s ease;
+        }
+
+        .floor-swiper .swiper-slide-active {
+          transform: scale(1);
+          opacity: 1;
+        }
+
+        .floor-swiper .swiper-slide-active .image{
+          background-color: white;
+          transform: scale(1);
+          opacity: 1;
+          transition: all 0.3s ease;
+        }
