@@ -49,7 +49,7 @@ export default function CircleRevealSection() {
         <section ref={containerRef} className="relative h-screen w-full bg-black overflow-hidden">
             <div ref={maskRef} className="absolute inset-0 w-full h-full z-10">
                 {/* Placeholder video source */}
-                <VideoStage src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" />
+                <VideoStage src="/videos/video1.mp4" />
             </div>
             <CenterLogo ref={logoRef} />
         </section>
