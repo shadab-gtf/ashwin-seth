@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useLayoutEffect, useState } from 'react';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import VideoStage from './VideoStage';
@@ -22,6 +22,9 @@ const TEXTS = [
 ];
 
 export default function MasterSequence() {
+    // State to track which video should be playing
+    const [activeVideo, setActiveVideo] = useState<number>(0);
+
     // Container & Video Refs
     const containerRef = useRef<HTMLDivElement>(null);
     const video1Ref = useRef<HTMLDivElement>(null);
@@ -92,7 +95,7 @@ export default function MasterSequence() {
 
             introTimeline.to(logoRef.current, {
                 opacity: 0,
-                duration: 1.4
+                duration: 1
             }, 'logo_hide');
 
             // 3. Header + Content Reveal (RIGHT AFTER logo hides)
@@ -108,7 +111,7 @@ export default function MasterSequence() {
                 duration: 1,
                 stagger: 0.1,
                 ease: 'power2.out'
-            }, 'logo_hide+=0.4'); // Slight delay after header starts
+            }, 'logo_hide+=0.3'); // Slight delay after header starts
 
             // ==========================================
             // SCROLL TIMELINE (SCROLL-BASED)
@@ -121,14 +124,28 @@ export default function MasterSequence() {
                         end: '+=800%',
                         pin: true,
                         scrub: 1,
-                        anticipatePin: 1
+                        anticipatePin: 1,
+                        onUpdate: (self) => {
+                            const progress = self.progress;
+
+                            // Determine active video based on scroll progress
+                            if (progress < 0.25) {
+                                setActiveVideo(0);
+                            } else if (progress < 0.5) {
+                                setActiveVideo(1);
+                            } else if (progress < 0.75) {
+                                setActiveVideo(2);
+                            } else {
+                                setActiveVideo(-1); // No video in final section
+                            }
+                        }
                     }
                 });
 
                 // ==========================================
                 // SECTION 1 → 2: VIDEO 1 → VIDEO 2
                 // ==========================================
-                scrollTL.to({}, { duration: 1.4 }); // Reading time for text 1
+                scrollTL.to({}, { duration: 2 }); // Reading time for text 1
 
                 scrollTL.to(text1Ref.current, {
                     opacity: 0,
@@ -160,7 +177,7 @@ export default function MasterSequence() {
                 // ==========================================
                 // SECTION 2 → 3: VIDEO 2 → VIDEO 3
                 // ==========================================
-                scrollTL.to({}, { duration: 1.4 }); // Reading time for text 2
+                scrollTL.to({}, { duration: 2 }); // Reading time for text 2
 
                 scrollTL.to(text2Ref.current, {
                     opacity: 0,
@@ -187,7 +204,7 @@ export default function MasterSequence() {
                 // ==========================================
                 // EARTH INTRO (BOTTOM CENTER)
                 // ==========================================
-                scrollTL.to({}, { duration: 1.4 });
+                scrollTL.to({}, { duration: 1.5 });
 
                 // EARTH APPEAR — FIXED
                 scrollTL.fromTo(
@@ -216,7 +233,7 @@ export default function MasterSequence() {
                 // ==========================================
                 // EARTH CENTER TRANSFORMATION
                 // ==========================================
-                scrollTL.to({}, { duration: 1.4 }); // Pause
+                scrollTL.to({}, { duration: 1 }); // Pause
 
                 // White circle reveal 1
                 createCircleReveal(
@@ -246,7 +263,7 @@ export default function MasterSequence() {
                 // ==========================================
                 // EARTH + CONTENT SPLIT SECTION
                 // ==========================================
-                scrollTL.to({}, { duration: 1.4 }); // Hold
+                scrollTL.to({}, { duration: 1.5 }); // Hold
 
                 scrollTL.to(earthScrollDownRef.current, {
                     opacity: 0,
@@ -282,7 +299,7 @@ export default function MasterSequence() {
                     'earth_split+=0.8'
                 );
 
-                scrollTL.to({}, { duration: 1.4 }); // Final hold
+                scrollTL.to({}, { duration: 2 }); // Final hold
             };
 
             // ==========================================
@@ -291,6 +308,8 @@ export default function MasterSequence() {
             const handleLoaderComplete = () => {
                 // Lock scroll during intro
                 document.body.style.overflow = 'hidden';
+                // Start video 1 playing
+                setActiveVideo(0);
                 introTimeline.play();
             };
 
@@ -323,19 +342,19 @@ export default function MasterSequence() {
                     className="absolute inset-0 z-10"
                     style={{ clipPath: 'circle(12% at 50% 50%)' }}
                 >
-                    <VideoStage src={VIDEOS[0]} />
+                    <VideoStage src={VIDEOS[0]} isActive={activeVideo === 0} />
                 </div>
                 <div
                     ref={video2Ref}
                     className="absolute inset-0 z-20 opacity-0"
                 >
-                    <VideoStage src={VIDEOS[1]} />
+                    <VideoStage src={VIDEOS[1]} isActive={activeVideo === 1} />
                 </div>
                 <div
                     ref={video3Ref}
                     className="absolute inset-0 z-30 opacity-0"
                 >
-                    <VideoStage src={VIDEOS[2]} />
+                    <VideoStage src={VIDEOS[2]} isActive={activeVideo === 2} />
                 </div>
             </div>
 
